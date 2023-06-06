@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
 size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t size, size_t MaxSize, unsigned int Seed);
 size_t LLVMFuzzerMutate(uint8_t *Data, size_t size, size_t MaxSize);
@@ -12,7 +14,7 @@ size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t size, size_t MaxSize, unsig
     if (!quad_fuzz_init) {
         quad_fuzz_debug = getenv("QUAD_FUZZ_DEBUG") != NULL;
         if (MaxSize < 0x10000) {
-            printf("quadfuzz starts with MaxSize = %zu\n", MaxSize)
+            printf("quadfuzz starts with MaxSize = %zu\n", MaxSize);
         }
         quad_fuzz_init = true;
     }
