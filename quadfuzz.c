@@ -30,7 +30,7 @@ size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t size, size_t MaxSize, unsig
         }
         quad_fuzz_init = true;
     }
-    if ((Seed & 1) == 0) {
+    if ((Seed & 1) == 0 || MaxSize < 0x10000) {
         return LLVMFuzzerMutate(Data, size, MaxSize);
     }
     Seed = Seed >> 1;
