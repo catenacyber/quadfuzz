@@ -38,8 +38,10 @@ size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t size, size_t MaxSize, unsig
     Seed = Seed >> 4;
     size_t pattern_repeat_nb = pattern_repeat_nbs[Seed & 0x7];
     Seed = Seed >> 3;
-    size_t prefix_postfix_ratio = (Seed & 0x7F);
-    Seed = Seed >> 7;
+    size_t prefix_postfix_ratio = (Seed & 0x3F);
+    Seed = Seed >> 6;
+    bool mutate_pattern = (Seed & 1);
+    Seed = Seed >> 1;
 
     if (pattern_repeat_len > size) {
         pattern_repeat_len = size;
@@ -68,6 +70,13 @@ size_t LLVMFuzzerCustomMutator(uint8_t *Data, size_t size, size_t MaxSize, unsig
     memcpy(qdata, Data, prefix_len);
     for (size_t i = 0; i < pattern_repeat_nb; i++) {
         memcpy(qdata + prefix_len + i * pattern_repeat_len, Data + prefix_len, pattern_repeat_len);
+        if (mutate_pattern) {
+            if (i % pattern_repeat_len) {
+                Data[prefix_len + (i % pattern_repeat_len)]++;
+            } else {
+                Data[prefix_len + (i % pattern_repeat_len)]-=pattern_repeat_len;
+            }
+        }
     }
     memcpy(qdata + qsize - postfix_len, Data + size - postfix_len, postfix_len);
     memcpy(Data, qdata, qsize);
